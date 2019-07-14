@@ -1,73 +1,68 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define  MAX 1000000
 
-void array_print (int a[], int max)
+#define MAX 128
+
+// 各リターンコードを設定
+#define PUSH_SUCCESS 1
+#define PUSH_FAILURE -1
+#define POP_SUCCESS 2
+#define POP_FAILURE -2
+
+// ポインタ変数topのアドレス先の値(実体)を初期化
+void stack_init (int *top)
+{
+    *top = 0;
+}
+
+void display (int stack[], int top)
 {
     int i;
-    for (i = 0; i < max; i++) {
-        printf("%02d ", a[i]);
+    printf("STACK(%d): ", top);
+    for (i = 0; i < top; i++) {
+        printf("%d ", stack[i]);
     }
     printf("\n");
 }
 
-int array_find_empty (int a[], int max)
+int push (int stack[], int *top, int data)
 {
-    int i;
-    for ( i=0; i < max; i++) {
-        if (a[i] == -1) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-void array_insert (int a[], int max, int index, int empty, int data)
-{
-    int i;
-    if (empty > index) {
-        for (i = empty; i > index; i--) {
-            a[i] = a[i - 1];
-        }
+    if (*top >= MAX) {
+        return PUSH_FAILURE;
     }
     else {
-        for (i = empty; i < index; i++) {
-            a[i] = a[i - 1];
-        }
+        stack[*top] = data;
+        (*top)++;
+        return PUSH_SUCCESS;
     }
-    a[index] = data;
 }
 
-int array_delete (int a[], int index)
+int pop (int stack[], int *top, int *data)
 {
-    int data;
-    data = a[index];
-    a[index] = -1;
-    return  data;
+    if ((*top) > 0) {
+        *data = stack[(*top) - 1];
+        (*top)--;
+        return POP_SUCCESS;
+    }
+    else {
+        return POP_FAILURE;
+    }
 }
 
 int main ()
 {
-    int i, j, index_ins, index_del, empty, data;
-    int a[MAX];
+    int stack[MAX];
+    int top, data;
+    int i;
 
-    for (j = 0; j < MAX; j++) {
-        a[j] = rand () % 100;
+    stack_init(&top);
+    for (i=0; i < 3; i++){
+        data = ((i+1) * 100) + 200;
+        printf("push: %d\n", data);
+        push (stack, &top, data);
     }
-
-    data = a[MAX / 2];
-    a[MAX / 2] = -1;
-
-    for (i = 0; i< 1000; i++) {
-        index_ins = rand () % MAX;
-        index_del = rand () % MAX;
+    for (i=0; i < 3; i++){
+        pop (stack, &top, &data);
+        printf("pop: %d\n", data);
     }
-
-    empty = array_find_empty(a, MAX);
-    array_insert(a, MAX, index_ins, empty, data);
-
-    data = array_delete (a, index_del);
-
-    return 0;
-
 }
