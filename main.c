@@ -1,44 +1,73 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <search.h>
+#define  MAX 1000000
 
-
-#define ARRAY_SIZE 10
-
-int compare ( int *x, int *y)
-{
-    return (*x - *y);
-}
-
-void print_array (int array[], int n)
+void array_print (int a[], int max)
 {
     int i;
-    for (i = 0; i < n; i++){
-        printf( "%d ", array[i]);
+    for (i = 0; i < max; i++) {
+        printf("%02d ", a[i]);
     }
     printf("\n");
 }
 
-int main ()
+int array_find_empty (int a[], int max)
 {
-    int key;
-    int *r;
-    int array[ARRAY_SIZE] = {
-        10, 12, 16, 19, 28, 30, 38, 44, 70, 98
-    };
-
-    key = 16;
-    print_array(array, ARRAY_SIZE);
-
-    r = ( int *) bsearch (&key, &array, ARRAY_SIZE, sizeof (int),
-                          (int (*)(const void *, const void *)) compare);
-    if (r != NULL) {
-        printf ("Found: %d\n", key);
+    int i;
+    for ( i=0; i < max; i++) {
+        if (a[i] == -1) {
+            return i;
+        }
     }
-    else {
-        printf ("Not found: %d\n", key);
-    }
-    return 0;
+    return -1;
 }
 
+void array_insert (int a[], int max, int index, int empty, int data)
+{
+    int i;
+    if (empty > index) {
+        for (i = empty; i > index; i--) {
+            a[i] = a[i - 1];
+        }
+    }
+    else {
+        for (i = empty; i < index; i++) {
+            a[i] = a[i - 1];
+        }
+    }
+    a[index] = data;
+}
 
+int array_delete (int a[], int index)
+{
+    int data;
+    data = a[index];
+    a[index] = -1;
+    return  data;
+}
+
+int main ()
+{
+    int i, j, index_ins, index_del, empty, data;
+    int a[MAX];
+
+    for (j = 0; j < MAX; j++) {
+        a[j] = rand () % 100;
+    }
+
+    data = a[MAX / 2];
+    a[MAX / 2] = -1;
+
+    for (i = 0; i< 1000; i++) {
+        index_ins = rand () % MAX;
+        index_del = rand () % MAX;
+    }
+
+    empty = array_find_empty(a, MAX);
+    array_insert(a, MAX, index_ins, empty, data);
+
+    data = array_delete (a, index_del);
+
+    return 0;
+
+}
