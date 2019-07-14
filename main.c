@@ -1,53 +1,46 @@
-
 #include <stdio.h>
 #include <stdlib.h>
-#define ARRAY_SIZE 13
+#include <search.h>
 
-int binary_search ( int array[], int num, int key)
+
+#define ARRAY_SIZE 10
+
+int compare ( int *x, int *y)
 {
-    int middle, low, high;
-    low = 0;
-    high = num - 1;
-    while (low <= high) {
-        middle = (low + high) / 2;
-        if ( key == array[middle]) {
-            return middle;
-        }
-        else if (key < array[middle]) {
-            high = middle - 1;
-        }
-        else {
-            low = middle + 1;
-        }
-    }
-    return -1;
+    return (*x - *y);
 }
 
 void print_array (int array[], int n)
 {
     int i;
-    for (i = 0; i < n; i++) {
-        printf("%d ", array[i]);
+    for (i = 0; i < n; i++){
+        printf( "%d ", array[i]);
     }
     printf("\n");
 }
 
-int main()
+int main ()
 {
-    int index, key;
+    int key;
+    int *r;
+    size_t elements;
     int array[ARRAY_SIZE] = {
-            50, 80, 150, 210, 250, 280, 330,
-            470, 510, 530, 800, 900, 990
+            12, 19, 70, 44, 16, 38, 10, 30, 28, 98
     };
+    key = 16;
+    elements = ARRAY_SIZE;
+    print_array(array, ARRAY_SIZE);
 
-    key = 800;
-    print_array( array, ARRAY_SIZE);
-    index = binary_search(array, ARRAY_SIZE, key);
-    if (index != -1) {
-        printf("Found: %d ( Index:%d)\n", key, index);
+    r = ( int *) lsearch (&key, &array, &elements, sizeof (int),
+                          (int (*)(const void *, const void *)) compare);
+
+    if (r != NULL) {
+        printf ("Found: %d\n", key);
     }
     else {
-        printf("Not Found: %d\n", key);
+        printf ("Not found: %d\n", key);
     }
     return 0;
 }
+
+
