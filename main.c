@@ -24,13 +24,13 @@ int main ()
     int key;
     int *r;
     int array[ARRAY_SIZE] = {
-        10, 12, 19, 70, 44, 16, 38, 10, 30, 28, 98
+        10, 12, 16, 19, 28, 30, 38, 44, 70, 98
     };
 
     key = 16;
     print_array(array, ARRAY_SIZE);
 
-    r = ( int *) lsearch (&key, &array, ARRAY_SIZE, sizeof (int),
+    r = ( int *) bsearch (&key, &array, ARRAY_SIZE, sizeof (int),
                           (int (*)(const void *, const void *)) compare);
     if (r != NULL) {
         printf ("Found: %d\n", key);
