@@ -1,60 +1,81 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define WIDTH 40
+#define HEIGHT 40
 
-#define MAX 128
-#define ENQUEUE_SUCCESS 1
-#define ENQUEUE_FAILURE -1
-#define DEQUEUE_SUCCESS 2
-#define DEQUEUE_FAILURE -2
-
-void queue_init (int *front, int *rear)
+void cell_evolve (int array[HEIGHT][WIDTH])
 {
-    *front = -1;
-    *rear = -1;
+    int array_new[HEIGHT][WIDTH];
+    int x, y, n, x_width, y_height;
+
+    for (y = 0; y < HEIGHT; y++) {
+        for (x = 0; x < WIDTH; x ++) {
+            n = 0;
+            for (y_height = y - 1; y_height <= y + 1; y_height++) {
+                for (x_width = x - 1; x_width <= x + 1; x_width++) {
+                    if (array[(y_height + HEIGHT) % HEIGHT][(x_width + WIDTH) % WIDTH]) {
+                        n++;
+                    }
+                }
+            }
+            if (array[y][x]) {
+                n--;
+            }
+            array_new[y][x] = (n == 3 || (n == 2 && array[y][x]));
+        }
+    }
+
+    for (y= 0; y< HEIGHT; y++) {
+        for (x=0; x < WIDTH; x++) {
+            array[y][x] = array_new[y][x];
+        }
+    }
 }
 
-int enqueue (int q[], int *rear, int data)
+void cell_first_generation(int array[HEIGHT][WIDTH])
 {
-    if (*rear < MAX - 1) {
-        *rear = *rear + 1;
-        q[*rear] = data;
-        return ENQUEUE_SUCCESS;
-    }
-    else {
-        return ENQUEUE_FAILURE;
+    int x, y, r;
+    for (x = 0; x < WIDTH; x++) {
+        for (y=0; y<HEIGHT; y++){
+            r = RAND_MAX / 8;
+            if (rand() < r){
+                array[y][x] = 1;
+            }else{
+                array[y][x] = 0;
+            }
+        }
     }
 }
 
-int dequeue (int q[], int *front, int rear, int *data)
+void cell_print (int array[HEIGHT][WIDTH], int generation)
 {
-    if (*front == rear) {
-        return DEQUEUE_FAILURE;
+    int x, y;
+    printf("[Generation: %05d]\n", generation);
+    for (y=0; y<HEIGHT; y++){
+        for (x=0; x<WIDTH; x++){
+            if (array[y][x]==1){
+                printf("*");
+            }
+            else {
+                printf(".");
+            }
+        }
+        printf("\n");
     }
-    *front = *front + 1;
-    *data = q[*front];
-    return DEQUEUE_SUCCESS;
+    printf("\n");
+    fflush(stdout);
 }
 
 int main()
 {
-    int queue[MAX];
-    int front, rear, data;
-    int stat;
-
-    queue_init (&front, &rear);
-    enqueue(queue, &rear, 100);
-    enqueue(queue, &rear, 200);
-    enqueue(queue, &rear, 300);
-    enqueue(queue, &rear, 400);
-    enqueue(queue, &rear, 500);
-    while (rear - front) {
-        stat = dequeue(queue, &front, rear, &data);
-        if (stat == DEQUEUE_SUCCESS){
-            printf("%d\n", data);
-        }
-        else {
-            printf("QUEUE is empty \n");
-        }
+    int i;
+    int array[HEIGHT][WIDTH];
+    cell_first_generation(array);
+    i = 0;
+    while ( i< 100){
+        cell_print(array,i);
+        cell_evolve(array);
+        i++;
     }
     return 0;
 }
