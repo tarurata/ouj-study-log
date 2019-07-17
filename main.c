@@ -1,35 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define IRIS_DATA "iris.dat"
+void print_array(int v[], int n)
+{
+    int i;
+    printf ("array: ");
+    for (i=0; i<n; i++){
+        printf("%d ", v[i]);
+    }
+    printf("\n");
+}
+
+void bubble_sort (int v[], int n)
+{
+    int i, j, t;
+    for (i=0; i<n-1; i++){
+        for (j=n-1; j>i; j--){
+            if (v[j-1]>v[j]){
+                t = v[j];
+                v[j] = v[j - 1];
+                v[j - 1] = t;
+            }
+            printf("i:%d j:%d  ", i, j);
+            print_array(v, n);
+        }
+    }
+}
 
 int main()
 {
-    FILE *fptr;
-    float sl, sw, pl, pw;
-    float s_sl,s_sw, s_pl, s_pw;
-    char name[128];
-
-    int n;
-    if (NULL == (fptr = fopen (IRIS_DATA, "r"))) {
-        fprintf (stderr, "Error: cannot open the file [%s]", IRIS_DATA);
-        exit (-1);
-    }
-    n = 0;
-    s_sl = s_sw = s_pl = s_pw = 0.0;
-    while (EOF != fscanf (fptr, "%f,%f,%f,%f,%s", &sl, &sw, &pl, &pw, name)) {
-        s_sl += sl;
-        s_sw += sw;
-        s_pl += pl;
-        s_pw += pw;
-        n++;
-    }
-    printf("iris data: %d\n", n);
-    printf("avg. sepal length: %f\n", s_sl /(float) n);
-    printf("avg. sepal width: %f\n", s_sw /(float) n);
-    printf("avg. petal length: %f\n", s_pl /(float) n);
-    printf("avg. petal width: %f\n", s_pw /(float) n);
-    fclose(fptr);
-
+    int array[5]
+    = {30, 50, 20, 10, 40};
+    print_array(array, 5);
+    bubble_sort(array, 5);
+    print_array(array, 5);
     return 0;
 }
+
