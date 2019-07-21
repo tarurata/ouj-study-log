@@ -1,64 +1,58 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define MAX 10
 
-void print_array(int v[], int n)
+void print_array (int v[], int n)
 {
     int i;
+
     printf("array: ");
+    for (i = 0; i<n; i++){
+        printf("%4d ", v[i]);
+    }
+    printf("\n");
+}
+
+void radix_sort(int a[], int n)
+{
+    int i, max, exp;
+    int temp[MAX];
+    int bucket[10];
+
+    max = 0;
+    exp = 1;
     for (i=0; i<n; i++){
+        if (a[i] > max){
+           max = a[i];
+        }
+    }
+    while (max/exp >0){
+        for (i=0; i<10; i++) {
+            bucket[i] = 0;
+        }
         for (i=0; i<n; i++){
-            printf("%d ", v[i]);
+            bucket[a[i]/ exp %10]++;
         }
-        printf("\n");
+        for (i=1; i<10; i++) {
+            bucket[i] += bucket[i-1];
+        }
+        for (i=n-1; i>=0; i--){
+            temp[--bucket[a[i]/ exp %10]] = a[i];
+        }
+        for (i=0; i<n; i++){
+            a[i] = temp[i];
+        }
+        exp *= 10;
+        print_array(a, n);
     }
-}
-
-int partition(int v[], int lower_bound, int upper_bound)
-{
-    int a, down, up, temp;
-    a = v[lower_bound];
-    up = upper_bound;
-    down = lower_bound;
-
-    while(down < up){
-        while((v[down] <= a) && (down < upper_bound)){
-            down++;
-        }
-        while(v[up] > a) {
-            up--;
-        }
-        if (down < up) {
-            temp = v[down];
-            v[down] = v[up];
-            v[up] = temp;
-        }
-    }
-    v[lower_bound] = v[up];
-    v[up] = a;
-    return up;
-}
-
-void quicksort (int v[], int left, int right)
-{
-    int p;
-    if (left >= right) {
-        return ;
-    }
-    // 分割
-    p = partition(v, left, right);
-    // 再帰関数呼び出し
-    quicksort(v, left, p-1);
-    // 再帰関数呼び出し
-    quicksort(v, p+1, right);
 }
 
 int main()
 {
-    int array[10]
-    = { 80, 40, 30, 20, 10, 00, 70, 90, 50, 60};
-
+    int array[MAX]
+    = { 12, 19, 10, 28, 30, 01, 502, 16, 34, 177};
     print_array(array, 10);
-    quicksort(array, 0, 9);
+    radix_sort(array, 10);
     print_array(array, 10);
 
     return 0;
