@@ -1,45 +1,40 @@
 #include <stdio.h>
 #include <stdlib.h>
+struct node
+{
+    int data;
+    // 構造体nodeのメンバとしてポインタ変数nextを宣言
+    struct node *next;
+};
+
+// 構造体nodeをNODE_TYPEと命名
+typedef struct node NODE_TYPE;
+
+void linked_list_print (NODE_TYPE * node)
+{
+    while (NULL != node) {
+        printf("%d ", node->data);
+        node = node->next;
+    }
+    printf("\n");
+}
 
 int main()
 {
-    // ポインタのポインタ
-    int **array;
-    int i, j, rows, columns;
+    NODE_TYPE *node;
+    node = malloc(sizeof (NODE_TYPE));
+    node->data = 300;
+    node->next = malloc (sizeof(NODE_TYPE));
+    node->next->data = 400;
+    node->next->next = malloc(sizeof (NODE_TYPE));
+    node->next->next->data = 500;
+    node->next->next->next = malloc(sizeof(NODE_TYPE));
+    node->next->next->next->data = 600;
 
-    rows = 10;
-    columns = 20;
+    // 末尾となるノードにNULLを設定
+    node->next->next->next->next = NULL;
 
-    // rows分のサイズのメモリをヒープ領域に確保し、arrayとして配列を作成
-    array = malloc (rows * sizeof(int *));
-
-    // array[0]から2次元配列分のメモリを確保?
-    array[0] = malloc(rows * columns * sizeof (int));
-
-    // 配列の2次元目を作成
-    for (i = 0; i<rows; i++ ){
-        array[i] = array[0] + i * columns;
-    }
-
-    // 配列のすべての要素にrandomな1桁の整数を入力していく
-    for (i=0; i<rows; i++) {
-        for (j=0; j<columns; j++) {
-            array[i][j]= rand() % 10;
-        }
-    }
-
-    // すべて表示
-    for (i=0; i<rows; i++){
-        for(j=0; j<columns; j++){
-            printf("%d ", array[i][j]);
-        }
-        printf("\n");
-    }
-
-    // メモリ解放
-    free(array[0]);
-    free(array);
-
+    // リンクドリストを出力
+    linked_list_print(node);
     return 0;
 }
-
