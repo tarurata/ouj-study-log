@@ -1,35 +1,43 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define ARRAY_SIZE 3000000
-// グローバル変数はメモリ上データセグメントに保存される
-int array[ARRAY_SIZE];
 
 int main()
 {
-    // ポインタ変数の宣言
-    int *array;
-    int i;
+    // ポインタのポインタ
+    int **array;
+    int i, j, rows, columns;
 
-    // malloc関数により、ARRAY_SIZE分のメモリをヒープ領域に確保
-    array = malloc(sizeof (int) * ARRAY_SIZE);
+    rows = 768;
+    columns = 1024;
 
-    // エラー処理
-    if (NULL == array) {
-        fprintf(stderr, "ERROR: malloc() \n");
-        exit (-1);
+    // rows分のサイズのメモリをヒープ領域に確保し、arrayとして配列を作成
+    array = malloc (rows * sizeof(int *));
+
+    // rows分の数だけヒープメモリ上にcolumns分のメモリを確保し、配列の2次元目を作成
+    for (i = 0; i<rows; i++ ){
+        array[i] = malloc(columns * sizeof (int));
     }
-    else {
-        // 確保した配列の全ての要素に100を入力していく
-        for (i=0; i<ARRAY_SIZE; i++) {
-            array[i] = 100;
+
+    // 配列のすべての要素にrandomな1桁の整数を入力していく
+    for (i=0; i<rows; i++) {
+        for (j=0; j<columns; j++) {
+            array[i][j]= rand() % 10;
         }
-        // 0-10までの配列の要素を出力
-        for (i=0; i<10; i++) {
-            printf("%d ", array[i]);
-        }
-        // free関数によりメモリ解放
-        free(array);
     }
+
+    // すべて表示
+    for (i=0; i<rows; i++){
+        for(j=0; j<columns; j++){
+            printf("%d ", array[i][j]);
+        }
+        printf("\n");
+    }
+
+    // すべてメモリ解放j
+    for (i=0; i<rows; i++){
+        free(array[i]);
+    }
+    free(array);
 
     return 0;
 }
